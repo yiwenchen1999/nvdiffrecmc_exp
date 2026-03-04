@@ -11,3 +11,10 @@ python train.py \
   --config configs/polyhaven.json \
   --ref_mesh /scratch/chen.yiwe/temp_objaverse/polyhaven_lvsm/test/metadata/ceramic_vase_02_white_env_0.json \
   --out-dir polyhaven/ceramic_vase_02_white_env_0
+
+  python relight.py \
+    --relight-meta relight_metadata/ceramic_vase_02_white_env_0.json \
+    --scene-meta-root /scratch/chen.yiwe/temp_objaverse/polyhaven_lvsm/test/metadata \
+    --envmaps-root /scratch/chen.yiwe/temp_objaverse/polyhaven_lvsm/test/envmaps \
+    --mesh-root out/polyhaven \
+    --output-dir relight_output
