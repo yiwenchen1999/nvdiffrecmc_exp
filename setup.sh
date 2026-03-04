@@ -1,76 +1,13 @@
-#!/bin/bash
-set -e
+conda create python=3.9 cmake=3.14.0 anaconda --prefix=/projects/vig/yiwenc/all_env/nvd
+export CONDA_PKGS_DIRS=/scratch/chen.yiwe/conda_pkgs
+mkdir -p $CONDA_PKGS_DIRS
+# 之后再做 conda create 等操作
+export PIP_CACHE_DIR=/scratch/chen.yiwe/pip_cache
+mkdir -p $PIP_CACHE_DIR
+conda activate /projects/vig/yiwenc/all_env/nvd
+cd /projects/vig/yiwenc/ResearchProjects/lightingDiffusion/nvdiffrecmc/nvdiffrecmc
 
-# ============================================================
-# Step 1: Install Miniconda (skip if already installed)
-# ============================================================
-if ! command -v conda &> /dev/null; then
-    echo ">>> Installing Miniconda..."
-    wget -q https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh
-    bash /tmp/miniconda.sh -b -p $HOME/miniconda3
-    rm /tmp/miniconda.sh
-    eval "$($HOME/miniconda3/bin/conda shell.bash hook)"
-    conda init bash
-    echo ">>> Miniconda installed. Please run: source ~/.bashrc && bash setup.sh"
-    exit 0
-else
-    echo ">>> Conda found at: $(which conda)"
-    eval "$(conda shell.bash hook)"
-fi
-
-# ============================================================
-# Step 2: Create conda env
-# ============================================================
-ENV_NAME="dmodel"
-
-if conda info --envs | grep -q "^${ENV_NAME} "; then
-    echo ">>> Env '${ENV_NAME}' exists, activating..."
-else
-    echo ">>> Creating conda env '${ENV_NAME}'..."
-    conda create -n ${ENV_NAME} python=3.9 -y
-fi
-conda activate ${ENV_NAME}
-
-# ============================================================
-# Step 3: Install PyTorch (2.1.0 + CUDA 12.1, supports H100)
-# ============================================================
-echo ">>> Installing PyTorch 2.1.0 + cu121..."
-pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu121
-
-# ============================================================
-# Step 4: Install dependencies
-# ============================================================
-echo ">>> Installing dependencies..."
-pip install ninja imageio PyOpenGL glfw xatlas gdown
-
-# ============================================================
-# Step 5: Install nvdiffrast
-# ============================================================
-echo ">>> Installing nvdiffrast..."
-pip install --no-build-isolation git+https://github.com/NVlabs/nvdiffrast/
-
-# ============================================================
-# Step 6: Install tiny-cuda-nn (with C++17 fix for PyTorch 2.x)
-# ============================================================
-echo ">>> Installing tiny-cuda-nn..."
-pip install setuptools
-export TCNN_CUDA_ARCHITECTURES=90
-TCNN_DIR="/tmp/tiny-cuda-nn"
-if [ ! -d "${TCNN_DIR}" ]; then
-    git clone --recursive https://github.com/NVlabs/tiny-cuda-nn "${TCNN_DIR}"
-fi
-cd "${TCNN_DIR}/bindings/torch"
-sed -i 's/c++14/c++17/g' setup.py
-pip install --no-build-isolation .
-cd ~/nvdiffrecmc_exp
-
-# ============================================================
-# Step 7: Download freeimage for imageio
-# ============================================================
-echo ">>> Downloading freeimage..."
-imageio_download_bin freeimage
-
-echo ""
-echo "============================================================"
-echo "Setup complete! Activate with: conda activate ${ENV_NAME}"
-echo "============================================================"
+python train.py \
+  --config configs/polyhaven.json \
+  --ref_mesh /scratch/chen.yiwe/temp_objaverse/polyhaven_lvsm/test/metadata/ceramic_vase_02_white_env_0.json \
+  --out-dir polyhaven/ceramic_vase_02_white_env_0

@@ -4,7 +4,7 @@
 #   e.g. bash run_polyhaven.sh 0
 
 GPU_ID=${1:-0}
-DATA_ROOT="/data/polyhaven_lvsm/test"
+DATA_ROOT="/scratch/chen.yiwe/temp_objaverse/polyhaven_lvsm/test"
 METADATA_DIR="${DATA_ROOT}/metadata"
 CONFIG="configs/polyhaven.json"
 
