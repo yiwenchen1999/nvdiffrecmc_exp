@@ -39,7 +39,7 @@ echo "  RELIGHTING ALL SCENES"
 echo "========================================="
 
 for scene in "${SCENES[@]}"; do
-    meta="data_samples/relight_metadata/${scene}.json"
+    meta="relight_metadata/${scene}.json"
     if [ ! -f "${meta}" ]; then
         echo "  [SKIP] Relight metadata not found: ${meta}"
         continue
