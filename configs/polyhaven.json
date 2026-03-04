@@ -1,0 +1,19 @@
+{
+    "ref_mesh": "/data/polyhaven_lvsm/test/metadata/Barrel_02_env_2.json",
+    "random_textures": true,
+    "iter": 5000,
+    "save_interval": 500,
+    "texture_res": [1024, 1024],
+    "train_res": [512, 512],
+    "batch": 4,
+    "learning_rate": [0.03, 0.01],
+    "ks_min": [0, 0.08, 0.0],
+    "ks_max": [0, 1.0, 1.0],
+    "learn_lighting": true,
+    "validate": true,
+    "display": [{"latlong": true}, {"bsdf": "kd"}, {"bsdf": "ks"}],
+    "background": "white",
+    "denoiser": "bilateral",
+    "n_samples": 4,
+    "out_dir": "polyhaven"
+}

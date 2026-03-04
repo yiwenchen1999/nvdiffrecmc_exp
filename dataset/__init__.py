@@ -10,3 +10,4 @@ from .dataset import Dataset
 from .dataset_mesh import DatasetMesh
 from .dataset_nerf import DatasetNERF
 from .dataset_llff import DatasetLLFF
+from .dataset_polyhaven import DatasetPolyhaven

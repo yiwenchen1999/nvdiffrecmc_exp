@@ -20,7 +20,7 @@ import nvdiffrast.torch as dr
 import xatlas
 
 # Import data readers / generators
-from dataset import DatasetMesh, DatasetNERF, DatasetLLFF
+from dataset import DatasetMesh, DatasetNERF, DatasetLLFF, DatasetPolyhaven
 
 # Import topology / geometry trainers
 from geometry.dmtet import DMTetGeometry
@@ -591,6 +591,9 @@ if __name__ == "__main__":
         ref_mesh         = mesh.load_mesh(FLAGS.ref_mesh, FLAGS.mtl_override)
         dataset_train    = DatasetMesh(ref_mesh, glctx, RADIUS, FLAGS, validate=False)
         dataset_validate = DatasetMesh(ref_mesh, glctx_display, RADIUS, FLAGS, validate=True)
+    elif os.path.splitext(FLAGS.ref_mesh)[1] == '.json':
+        dataset_train    = DatasetPolyhaven(FLAGS.ref_mesh, FLAGS, examples=(FLAGS.iter+1)*FLAGS.batch, validate=False)
+        dataset_validate = DatasetPolyhaven(FLAGS.ref_mesh, FLAGS, validate=True)
     elif os.path.isdir(FLAGS.ref_mesh):
         if os.path.isfile(os.path.join(FLAGS.ref_mesh, 'poses_bounds.npy')):
             dataset_train    = DatasetLLFF(FLAGS.ref_mesh, FLAGS, examples=(FLAGS.iter+1)*FLAGS.batch)
