@@ -61,7 +61,7 @@ if [ ! -d "${TCNN_DIR}" ]; then
 fi
 cd "${TCNN_DIR}/bindings/torch"
 sed -i 's/c++14/c++17/g' setup.py
-pip install .
+pip install --no-build-isolation .
 cd ~/nvdiffrecmc_exp
 
 # ============================================================
