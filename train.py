@@ -563,7 +563,10 @@ if __name__ == "__main__":
 
     if FLAGS.config is not None:
         data = json.load(open(FLAGS.config, 'r'))
+        cli_override = {'ref_mesh', 'out_dir'}  # CLI takes precedence over config
         for key in data:
+            if key in cli_override and getattr(FLAGS, key, None) is not None:
+                continue
             FLAGS.__dict__[key] = data[key]
 
     if FLAGS.display_res is None:

@@ -5,7 +5,7 @@ mkdir -p $CONDA_PKGS_DIRS
 export PIP_CACHE_DIR=/scratch/chen.yiwe/pip_cache
 mkdir -p $PIP_CACHE_DIR
 conda activate /projects/vig/yiwenc/all_env/nvd
-cd /projects/vig/yiwenc/ResearchProjects/lightingDiffusion/nvdiffrecmc/nvdiffrecmc
+cd /projects/vig/yiwenc/ResearchProjects/lightingDiffusion/nvdiffrecmc/nvdiffrecmc_exp
 
 python train.py \
   --config configs/polyhaven.json \
