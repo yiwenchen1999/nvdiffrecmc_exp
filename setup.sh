@@ -55,8 +55,14 @@ pip install --no-build-isolation git+https://github.com/NVlabs/nvdiffrast/
 echo ">>> Installing tiny-cuda-nn..."
 pip install setuptools
 export TCNN_CUDA_ARCHITECTURES=90
-export CXXFLAGS="-std=c++17"
-pip install --no-build-isolation git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
+TCNN_DIR="/tmp/tiny-cuda-nn"
+if [ ! -d "${TCNN_DIR}" ]; then
+    git clone --recursive https://github.com/NVlabs/tiny-cuda-nn "${TCNN_DIR}"
+fi
+cd "${TCNN_DIR}/bindings/torch"
+sed -i 's/c++14/c++17/g' setup.py
+pip install .
+cd ~/nvdiffrecmc_exp
 
 # ============================================================
 # Step 7: Download freeimage for imageio
