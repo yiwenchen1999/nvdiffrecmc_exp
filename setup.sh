@@ -53,9 +53,10 @@ pip install --no-build-isolation git+https://github.com/NVlabs/nvdiffrast/
 # Step 6: Install tiny-cuda-nn (with C++17 fix for PyTorch 2.x)
 # ============================================================
 echo ">>> Installing tiny-cuda-nn..."
+pip install setuptools
 export TCNN_CUDA_ARCHITECTURES=90
 export CXXFLAGS="-std=c++17"
-pip install git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
+pip install --no-build-isolation git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
 
 # ============================================================
 # Step 7: Download freeimage for imageio
