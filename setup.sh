@@ -47,7 +47,7 @@ pip install ninja imageio PyOpenGL glfw xatlas gdown
 # Step 5: Install nvdiffrast
 # ============================================================
 echo ">>> Installing nvdiffrast..."
-pip install git+https://github.com/NVlabs/nvdiffrast/
+pip install --no-build-isolation git+https://github.com/NVlabs/nvdiffrast/
 
 # ============================================================
 # Step 6: Install tiny-cuda-nn (with C++17 fix for PyTorch 2.x)
