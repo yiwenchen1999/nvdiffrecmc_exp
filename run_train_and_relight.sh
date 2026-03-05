@@ -16,22 +16,22 @@ SCENES=(
     "potted_plant_02_white_env_0"
 )
 
-# ===== Phase 1: Train all scenes =====
-for scene in "${SCENES[@]}"; do
-    echo "========================================="
-    echo "  TRAINING: ${scene}"
-    echo "========================================="
+# # ===== Phase 1: Train all scenes =====
+# for scene in "${SCENES[@]}"; do
+#     echo "========================================="
+#     echo "  TRAINING: ${scene}"
+#     echo "========================================="
 
-    if [ -f "out/polyhaven/${scene}/mesh/mesh.obj" ]; then
-        echo "  Mesh already exists, skipping training."
-    else
-        python train.py \
-            --config "${CONFIG}" \
-            --ref_mesh "${METADATA_DIR}/${scene}.json" \
-            --out-dir "polyhaven/${scene}"
-    fi
-    echo ""
-done
+#     if [ -f "out/polyhaven/${scene}/mesh/mesh.obj" ]; then
+#         echo "  Mesh already exists, skipping training."
+#     else
+#         python train.py \
+#             --config "${CONFIG}" \
+#             --ref_mesh "${METADATA_DIR}/${scene}.json" \
+#             --out-dir "polyhaven/${scene}"
+#     fi
+#     echo ""
+# done
 
 # ===== Phase 2: Relight all scenes =====
 echo "========================================="

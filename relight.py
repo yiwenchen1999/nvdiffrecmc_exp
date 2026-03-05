@@ -50,6 +50,34 @@ OPENCV_TO_OPENGL = torch.tensor([
 ], dtype=torch.float32)
 
 
+def tonemap_aces(x):
+    """ACES filmic tone mapping curve (applied in linear space before sRGB)."""
+    a = 2.51
+    b = 0.03
+    c = 2.43
+    d = 0.59
+    e = 0.14
+    return torch.clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0)
+
+
+def tonemap_reinhard(x):
+    """Reinhard tone mapping."""
+    return x / (1.0 + x)
+
+
+def tonemap_exposure(x, exposure=1.0):
+    """Exposure-based tone mapping: 1 - exp(-x * exposure)."""
+    return 1.0 - torch.exp(-x * exposure)
+
+
+TONEMAPPERS = {
+    'none': None,
+    'aces': tonemap_aces,
+    'reinhard': tonemap_reinhard,
+    'exposure': tonemap_exposure,
+}
+
+
 def reconstruct_hdr_from_pngs(hdr_path, ldr_path):
     """Reconstruct approximate HDR from the stored hdr+ldr PNG pair.
 
@@ -237,6 +265,15 @@ def relight_scene(relight_meta_path, scene_meta_root, envmaps_root, mesh_root,
                 background=None, optix_ctx=optix_ctx)
 
         shaded = buffers['shaded'][0, ..., 0:3]
+
+        # Apply tone mapping in linear space (before sRGB conversion)
+        tonemap_fn = TONEMAPPERS.get(args.tonemap)
+        if tonemap_fn is not None:
+            if args.tonemap == 'exposure':
+                shaded = tonemap_fn(shaded, exposure=args.exposure)
+            else:
+                shaded = tonemap_fn(shaded)
+
         shaded_srgb = util.rgb_to_srgb(shaded)
         shaded_np = torch.clamp(shaded_srgb, 0.0, 1.0).detach().cpu().numpy()
 
@@ -253,6 +290,8 @@ def relight_scene(relight_meta_path, scene_meta_root, envmaps_root, mesh_root,
         "target_view_indices": target_indices,
         "resolution": resolution,
         "n_samples": FLAGS.n_samples,
+        "tonemap": args.tonemap,
+        "exposure": args.exposure if args.tonemap == 'exposure' else None,
     }
     with open(os.path.join(out_scene_dir, "relight_info.json"), 'w') as f:
         json.dump(summary, f, indent=2)
@@ -284,6 +323,11 @@ def main():
                         help='Number of light samples for shading')
     parser.add_argument('--probe-res', type=int, default=256,
                         help='Resolution to resize envmap probe (None to keep original)')
+    parser.add_argument('--tonemap', type=str, default='aces',
+                        choices=['none', 'aces', 'reinhard', 'exposure'],
+                        help='Tone mapping function applied before sRGB conversion')
+    parser.add_argument('--exposure', type=float, default=1.0,
+                        help='Exposure value for exposure tone mapping')
 
     args = parser.parse_args()
 
