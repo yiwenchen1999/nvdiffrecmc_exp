@@ -51,6 +51,7 @@ for scene in "${SCENES[@]}"; do
         --scene-meta-root "${DATA_ROOT}/metadata" \
         --envmaps-root "${DATA_ROOT}/envmaps" \
         --mesh-root "out/polyhaven" \
+        --tonemap "reinhard" \
         --output-dir relight_output
     echo ""
 done
